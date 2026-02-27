@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Old Town Spa — Tbil Inn</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+  <style>
+    /* ════════ CORE STYLES & VARIABLES ════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ivory: #f9f6f1;
+      --sand: #ede8e0;
+      --stone: #c8bfb0;
+      --charcoal: #1e1e1e;
+      --warm-gray: #6b6560;
+      --accent: #8b6f47;
+      --accent-light: #c4a882;
+      --container-width: 1200px;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--ivory);
+      color: var(--charcoal);
+      font-family: 'Jost', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+      padding-bottom: 70px; /* Space for mobile sticky bar */
+    }
+
+    /* ════════ NAVIGATION (DESKTOP) ════════ */
+    nav#desktop-nav {
+      display: none; /* Hidden on mobile */
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1050;
+      padding: 24px 40px;
+      justify-content: space-between; align-items: center;
+      transition: background 0.4s, padding 0.4s;
+    }
+    nav#desktop-nav.scrolled {
+      background: rgba(249,246,241,0.96); backdrop-filter: blur(12px);
+      padding: 16px 40px; border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+    .desktop-logo {
+      font-family: 'Cormorant Garamond', serif; font-size: 1.6rem;
+      letter-spacing: 0.1em; color: #fff; text-decoration: none; transition: color 0.3s;
+    }
+    nav#desktop-nav.scrolled .desktop-logo { color: var(--charcoal); }
+    .desktop-links { display: flex; gap: 32px; }
+    .desktop-links a {
+      font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.15em;
+      color: rgba(255,255,255,0.9); text-decoration: none; position: relative;
+      transition: color 0.3s;
+    }
+    nav#desktop-nav.scrolled .desktop-links a { color: var(--charcoal); }
+    .desktop-links a::after {
+      content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 1px;
+      background: var(--accent); transition: width 0.3s;
+    }
+    .desktop-links a:hover::after { width: 100%; }
+
+    /* ════════ MOBILE HEADER ════════ */
+    .mobile-header {
+      display: flex; position: fixed; top: 0; left: 0; right: 0; z-index: 1050;
+      background: transparent; padding: 14px 20px;
+      justify-content: space-between; align-items: center;
+      transition: background 0.3s;
+    }
+    .mobile-header.scrolled {
+      background: rgba(249,246,241,0.96); backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+    .mobile-logo {
+      font-family: 'Cormorant Garamond', serif; font-size: 1.25rem;
+      letter-spacing: 0.1em; color: #fff; text-decoration: none; transition: color 0.3s;
+    }
+    .mobile-header.scrolled .mobile-logo { color: var(--charcoal); }
+    
+    .mobile-hamburger {
+      display: flex; flex-direction: column; gap: 5px; align-items: flex-end;
+      background: none; border: none; cursor: pointer; padding: 6px 4px;
+    }
+    .mobile-hamburger .line {
+      display: block; height: 1px; background: #fff; transition: 0.3s;
+    }
+    .mobile-header.scrolled .mobile-hamburger .line { background: var(--charcoal); }
+    .mobile-hamburger .line:nth-child(1) { width: 24px; }
+    .mobile-hamburger .line:nth-child(2) { width: 16px; }
+
+    /* ════════ MOBILE MENU OVERLAY ════════ */
+    .mobile-menu-overlay {
+      position: fixed; inset: 0; z-index: 1100;
+      background: rgba(250,249,246,0.98); backdrop-filter: blur(20px);
+      display: flex; flex-direction: column;
+      transform: translateX(100%); transition: transform 0.5s ease-in-out;
+    }
+    .mobile-menu-overlay.open { transform: translateX(0); }
+    .mobile-menu-top {
+      padding: 16px 20px; display: flex; justify-content: space-between; align-items: center;
+    }
+    .mobile-close { background: none; border: none; cursor: pointer; }
+    .mobile-close span { font-size: 28px; color: var(--charcoal); }
+    
+    .mobile-menu-nav {
+      flex: 1; display: flex; flex-direction: column; justify-content: center;
+      padding: 0 40px; gap: 24px;
+    }
+    .mobile-menu-nav a {
+      font-family: 'Cormorant Garamond', serif; font-size: 2.2rem;
+      color: var(--charcoal); text-decoration: none;
+      opacity: 0; transform: translateY(20px); transition: 0.4s;
+    }
+    .mobile-menu-overlay.open .mobile-menu-nav a { opacity: 1; transform: translateY(0); }
+
+    /* ════════ HERO SECTION ════════ */
+    .service-hero {
+      position: relative; width: 100%; height: 70vh; min-height: 400px;
+      overflow: hidden; background: var(--charcoal);
+    }
+    .service-hero img {
+      width: 100%; height: 100%; object-fit: cover;
+      opacity: 0.9; transition: transform 2s ease-out;
+    }
+    .overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(20,20,30,0.6) 100%);
+    }
+    .hero-content {
+      position: absolute; bottom: 0; left: 0; width: 100%;
+      padding: 0 20px 48px; z-index: 10;
+    }
+    .breadcrumb {
+      display: flex; align-items: center; gap: 8px; margin-bottom: 12px;
+    }
+    .breadcrumb a {
+      font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: rgba(255,255,255,0.7); text-decoration: none;
+    }
+    .breadcrumb span { color: rgba(255,255,255,0.3); font-size: 0.6rem; }
+    .hero-title {
+      font-family: 'Cormorant Garamond', serif; font-size: clamp(2.5rem, 8vw, 4.5rem);
+      font-weight: 300; color: #fff; line-height: 1.1; margin-bottom: 8px;
+    }
+    .hero-subtitle {
+      font-size: 0.65rem; letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--accent-light);
+    }
+
+    /* ════════ LAYOUT & TYPOGRAPHY ════════ */
+    .page-container {
+      max-width: 100%; padding: 40px 20px 0;
+      display: flex; flex-direction: column;
+    }
+
+    .section-label {
+      display: block; font-size: 0.6rem; font-weight: 400;
+      text-transform: uppercase; letter-spacing: 0.24em;
+      color: var(--accent); margin-bottom: 12px;
+    }
+    .section-head {
+      font-family: 'Cormorant Garamond', serif; font-size: 1.8rem;
+      font-weight: 300; letter-spacing: 0.02em; margin-bottom: 20px;
+      color: var(--charcoal); line-height: 1.2;
+    }
+    .text-body {
+      font-family: 'Cormorant Garamond', serif; font-size: 1.1rem;
+      font-weight: 300; font-style: italic; line-height: 1.7;
+      color: var(--warm-gray); margin-bottom: 32px;
+    }
+    .text-detail {
+      font-size: 0.85rem; font-weight: 300; line-height: 1.8;
+      color: var(--warm-gray); margin-bottom: 48px;
+    }
+
+    /* ════════ GALLERY STRIP ════════ */
+    .gallery-strip {
+      display: flex; gap: 10px; overflow-x: auto;
+      margin-bottom: 48px; scrollbar-width: none;
+    }
+    .gallery-strip::-webkit-scrollbar { display: none; }
+    .gallery-item {
+      flex-shrink: 0; width: 240px; height: 320px;
+    }
+    .gallery-item img {
+      width: 100%; height: 100%; object-fit: cover;
+    }
+
+    /* ════════ MENU LIST ════════ */
+    .service-menu { margin-bottom: 60px; }
+    .menu-category { margin-bottom: 32px; }
+    .menu-category-title {
+      font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.15em;
+      color: var(--charcoal); margin-bottom: 16px; border-bottom: 1px solid var(--sand);
+      padding-bottom: 8px; display: inline-block;
+    }
+    .menu-item { margin-bottom: 18px; }
+    .menu-header {
+      display: flex; align-items: baseline; justify-content: space-between;
+      margin-bottom: 4px; position: relative;
+    }
+    .menu-name {
+      font-family: 'Cormorant Garamond', serif; font-size: 1.25rem;
+      color: var(--charcoal); background: var(--ivory); z-index: 2; padding-right: 8px;
+    }
+    .menu-price {
+      font-family: 'Cormorant Garamond', serif; font-size: 1.15rem;
+      color: var(--accent); background: var(--ivory); z-index: 2; padding-left: 8px;
+    }
+    .menu-dots {
+      position: absolute; bottom: 5px; left: 0; right: 0;
+      border-bottom: 1px dotted var(--stone); z-index: 1; opacity: 0.5;
+    }
+    .menu-desc {
+      font-size: 0.75rem; color: var(--warm-gray); line-height: 1.5;
+      max-width: 90%;
+    }
+
+    /* ════════ SIDEBAR CARD ════════ */
+    .sidebar-card {
+      background: var(--ivory); border: 1px solid var(--sand);
+      padding: 32px 24px; margin-bottom: 40px;
+    }
+    .sidebar-title {
+      font-family: 'Cormorant Garamond', serif; font-size: 1.4rem;
+      margin-bottom: 24px; color: var(--charcoal);
+    }
+    .info-row {
+      display: flex; gap: 12px; margin-bottom: 16px; align-items: flex-start;
+    }
+    .info-icon { color: var(--accent); font-size: 18px; margin-top: 2px; }
+    .info-text { display: flex; flex-direction: column; }
+    .info-label {
+      font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.2em;
+      color: var(--stone); margin-bottom: 4px;
+    }
+    .info-value {
+      font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: var(--charcoal);
+    }
+    .btn-block {
+      display: block; width: 100%; text-align: center;
+      font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.2em;
+      color: #fff; background: var(--accent); border: none;
+      padding: 16px; margin-top: 24px; text-decoration: none; cursor: pointer;
+      transition: background 0.3s;
+    }
+    .btn-block:hover { background: var(--charcoal); }
+
+    /* ════════ OTHER SERVICES SECTION ════════ */
+    .other-services {
+      background: var(--sand);
+      padding: 60px 0;
+      margin-top: 80px; /* Separation from main content */
+    }
+    
+    .other-services-header {
+      padding: 0 20px;
+      margin-bottom: 30px;
+    }
+    
+    .section-divider {
+      width: 40px; height: 1px;
+      background: var(--stone);
+      margin-top: 16px;
+    }
+
+    /* Grid / Scroll Container */
+    .other-services-grid {
+      display: flex; gap: 16px;
+      overflow-x: auto; 
+      padding: 0 20px;
+      scrollbar-width: none;
+      scroll-snap-type: x mandatory;
+    }
+    .other-services-grid::-webkit-scrollbar { display: none; }
+
+    /* Card Styling */
+    .service-card {
+      flex-shrink: 0;
+      width: 80vw; max-width: 280px;
+      background: var(--ivory);
+      text-decoration: none;
+      scroll-snap-align: start;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border: 1px solid transparent;
+      display: block;
+    }
+    
+    .service-card-img {
+      height: 180px; width: 100%; overflow: hidden;
+    }
+    .service-card-img img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+    .service-card:hover .service-card-img img {
+      transform: scale(1.05);
+    }
+
+    .service-card-body {
+      padding: 20px 18px 24px;
+      display: flex; flex-direction: column;
+    }
+
+    .service-card-cat {
+      font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.2em;
+      color: var(--accent); margin-bottom: 8px; display: block;
+    }
+    
+    .service-card-title {
+      font-family: 'Cormorant Garamond', serif; font-size: 1.3rem;
+      font-weight: 300; color: var(--charcoal);
+      margin-bottom: 8px; line-height: 1.1; display: block;
+    }
+    
+    .service-card-desc {
+      font-size: 0.7rem; color: var(--warm-gray);
+      line-height: 1.5; margin-bottom: 20px;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    
+    .service-card-link {
+      font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.15em;
+      color: var(--charcoal); border-bottom: 1px solid var(--sand);
+      align-self: flex-start; padding-bottom: 2px;
+      transition: color 0.3s, border-color 0.3s;
+    }
+    .service-card:hover .service-card-link {
+      color: var(--accent); border-color: var(--accent);
+    }
+
+    /* ════════ FOOTER ════════ */
+    footer {
+      padding: 40px 20px; background: var(--charcoal); text-align: center;
+    }
+    .footer-links a {
+      color: rgba(255,255,255,0.5); text-decoration: none;
+      font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.15em;
+      margin: 0 10px; transition: color 0.3s;
+    }
+    .footer-links a:hover { color: #fff; }
+    .footer-copy {
+      display: block; margin-top: 24px;
+      font-size: 0.55rem; color: rgba(255,255,255,0.2); letter-spacing: 0.1em;
+    }
+
+    /* ════════ MOBILE STICKY BAR ════════ */
+    .mobile-cta-bar {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(249,246,241,0.95); backdrop-filter: blur(10px);
+      border-top: 1px solid var(--sand); padding: 12px 20px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .cta-text { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; }
+    .cta-btn {
+      background: var(--accent); color: #fff; border: none;
+      padding: 10px 20px; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.15em;
+    }
+
+    /* ════════ ANIMATIONS ════════ */
+    .fade-in { opacity: 0; transform: translateY(20px); transition: 0.6s ease; }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+    /* ════════ DESKTOP ADAPTATION (≥ 1024px) ════════ */
+    @media (min-width: 1024px) {
+      body { padding-bottom: 0; }
+      .mobile-header, .mobile-cta-bar, .mobile-hamburger { display: none; }
+      nav#desktop-nav { display: flex; }
+
+      .service-hero { height: 60vh; }
+      .hero-content { padding: 0 40px 60px; max-width: var(--container-width); margin: 0 auto; }
+      
+      .page-container {
+        display: grid; grid-template-columns: 60% 30%;
+        justify-content: space-between;
+        max-width: var(--container-width); margin: 0 auto; padding-top: 80px;
+      }
+      
+      .sidebar-card { position: sticky; top: 100px; }
+      .text-detail { max-width: 90%; }
+      
+      .gallery-item { width: 300px; height: 400px; transition: transform 0.3s; }
+      .gallery-item:hover { transform: translateY(-5px); }
+
+      /* Other Services Desktop */
+      .other-services { padding: 80px 0; }
+      .other-services-header, .other-services-grid {
+        max-width: var(--container-width);
+        margin: 0 auto;
+        padding-left: 40px; padding-right: 40px;
+      }
+      .other-services-header { margin-bottom: 50px; }
+      .other-services-grid {
+        display: grid; 
+        grid-template-columns: repeat(3, 1fr);
+        gap: 30px;
+        overflow: visible;
+      }
+      .service-card { width: 100%; max-width: none; }
+      .service-card-img { height: 240px; }
+      .service-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- DESKTOP NAV -->
+  <nav id="desktop-nav">
+    <a href="index.html" class="desktop-logo">Tbil Inn</a>
+    <div class="desktop-links">
+      <a href="index.html#rooms">Rooms</a>
+      <a href="index.html#services">Services</a>
+      <a href="index.html#gallery">Gallery</a>
+      <a href="index.html#contacts">Contact</a>
+    </div>
+  </nav>
+
+  <!-- MOBILE HEADER -->
+  <header class="mobile-header" id="mobile-header">
+    <a href="index.html" class="mobile-logo">Tbil Inn</a>
+    <button class="mobile-hamburger" onclick="toggleMobileMenu()">
+      <span class="line"></span><span class="line"></span>
+    </button>
+  </header>
+
+  <!-- MOBILE MENU OVERLAY -->
+  <div class="mobile-menu-overlay" id="mobile-menu-overlay">
+    <div class="mobile-menu-top">
+      <span style="font-family:'Cormorant Garamond'; font-size:1.2rem;">Menu</span>
+      <button class="mobile-close" onclick="toggleMobileMenu()">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <nav class="mobile-menu-nav">
+      <a href="index.html">Home</a>
+      <a href="index.html#rooms">Rooms</a>
+      <a href="index.html#services">Services</a>
+      <a href="index.html#contacts">Contacts</a>
+    </nav>
+  </div>
+
+  <!-- HERO SECTION -->
+  <section class="service-hero">
+    <img src="https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2?q=80&w=1600&auto=format&fit=crop" alt="Spa Atmosphere">
+    <div class="overlay"></div>
+    <div class="hero-content">
+      <div class="breadcrumb">
+        <a href="index.html">Home</a> <span>/</span> <a href="index.html#services">Services</a>
+      </div>
+      <h1 class="hero-title">Old Town Spa</h1>
+      <span class="hero-subtitle">Wellness · Rituals · Serenity</span>
+    </div>
+  </section>
+
+  <!-- MAIN CONTENT -->
+  <main>
+    <div class="page-container">
+    
+      <!-- Left Column: Content -->
+      <div class="content-col">
+        <div class="fade-in">
+          <span class="section-label">The Experience</span>
+          <h2 class="section-head">Rejuvenation inspired by ancient traditions</h2>
+          <p class="text-body">Nestled within the stone foundations of Tbil Inn, our spa offers a sanctuary of silence away from the bustling streets of the Old Town.</p>
+          <p class="text-detail">Using organic Georgian products infused with grape seed oil and mountain herbs, our therapies are designed to restore balance. Whether you seek a deep tissue massage after a day of exploring or a hydrating facial ritual, our therapists tailor every moment to your needs.</p>
+        </div>
+
+        <!-- PHOTO STRIP -->
+        <div class="gallery-strip fade-in">
+          <div class="gallery-item"><img src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=500&q=80" alt="Massage"></div>
+          <div class="gallery-item"><img src="https://images.unsplash.com/photo-1600334129128-685c5582fd35?auto=format&fit=crop&w=500&q=80" alt="Oils"></div>
+          <div class="gallery-item"><img src="https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&w=500&q=80" alt="Relax"></div>
+        </div>
+
+        <!-- MENU -->
+        <div class="service-menu fade-in">
+          <span class="section-label">Treatment Menu</span>
+          <h2 class="section-head">Signatures</h2>
+
+          <div class="menu-category">
+            <span class="menu-category-title">Massages</span>
+            
+            <div class="menu-item">
+              <div class="menu-header">
+                <span class="menu-name">Georgian Aromatherapy</span>
+                <span class="menu-dots"></span>
+                <span class="menu-price">180 GEL</span>
+              </div>
+              <p class="menu-desc">60 min. A gentle full-body massage using warm essential oils from Kakheti.</p>
+            </div>
+
+            <div class="menu-item">
+              <div class="menu-header">
+                <span class="menu-name">Deep Tissue Restore</span>
+                <span class="menu-dots"></span>
+                <span class="menu-price">220 GEL</span>
+              </div>
+              <p class="menu-desc">60 min. Focused pressure to relieve tension and muscle stress.</p>
+            </div>
+
+            <div class="menu-item">
+              <div class="menu-header">
+                <span class="menu-name">Hot Stone Ritual</span>
+                <span class="menu-dots"></span>
+                <span class="menu-price">250 GEL</span>
+              </div>
+              <p class="menu-desc">90 min. Smooth volcanic stones combined with manual massage.</p>
+            </div>
+          </div>
+
+          <div class="menu-category">
+            <span class="menu-category-title">Facials</span>
+            
+            <div class="menu-item">
+              <div class="menu-header">
+                <span class="menu-name">Organic Glow</span>
+                <span class="menu-dots"></span>
+                <span class="menu-price">160 GEL</span>
+              </div>
+              <p class="menu-desc">45 min. Cleansing and hydration using grape seed extract.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Sidebar -->
+      <aside class="sidebar-col">
+        <div class="sidebar-card fade-in">
+          <h3 class="sidebar-title">Information</h3>
+          
+          <div class="info-row">
+            <span class="material-symbols-outlined info-icon">schedule</span>
+            <div class="info-text">
+              <span class="info-label">Hours</span>
+              <span class="info-value">10:00 — 22:00</span>
+            </div>
+          </div>
+
+          <div class="info-row">
+            <span class="material-symbols-outlined info-icon">location_on</span>
+            <div class="info-text">
+              <span class="info-label">Location</span>
+              <span class="info-value">Lower Ground Floor</span>
+            </div>
+          </div>
+
+          <div class="info-row">
+            <span class="material-symbols-outlined info-icon">mail</span>
+            <div class="info-text">
+              <span class="info-label">Contact</span>
+              <span class="info-value">spa@tbilinn.ge</span>
+            </div>
+          </div>
+
+          <button class="btn-block" onclick="alert('Booking modal would open here')">Book Treatment</button>
+        </div>
+      </aside>
+
+    </div><!-- /page-container -->
+
+    <!-- OTHER SERVICES SECTION -->
+    <section class="other-services">
+      <div class="other-services-header fade-in">
+        <span class="section-label">Discover More</span>
+        <h2 class="section-head">Other Services</h2>
+        <div class="section-divider"></div>
+      </div>
+
+      <div class="other-services-grid">
+        
+        <!-- Card 1: Dining -->
+        <a href="#" class="service-card fade-in">
+          <div class="service-card-img">
+            <img src="https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=600&q=80" alt="Restaurant" loading="lazy">
+          </div>
+          <div class="service-card-body">
+            <span class="service-card-cat">Dining · Seasonal</span>
+            <h3 class="service-card-title">The Atrium Restaurant</h3>
+            <p class="service-card-desc">Modern Georgian cuisine under a glass roof.</p>
+            <span class="service-card-link">Explore</span>
+          </div>
+        </a>
+
+        <!-- Card 2: Concierge -->
+        <a href="#" class="service-card fade-in">
+          <div class="service-card-img">
+            <img src="https://images.unsplash.com/photo-1524781289445-ddf8f5695861?auto=format&fit=crop&w=600&q=80" alt="Concierge" loading="lazy">
+          </div>
+          <div class="service-card-body">
+            <span class="service-card-cat">Experiences · 24h</span>
+            <h3 class="service-card-title">Concierge Service</h3>
+            <p class="service-card-desc">Curated city tours and private transport.</p>
+            <span class="service-card-link">Explore</span>
+          </div>
+        </a>
+
+        <!-- Card 3: Wine Cellar -->
+        <a href="#" class="service-card fade-in">
+          <div class="service-card-img">
+            <img src="https://images.unsplash.com/photo-1516594915697-87eb3b1c14ea?auto=format&fit=crop&w=600&q=80" alt="Wine" loading="lazy">
+          </div>
+          <div class="service-card-body">
+            <span class="service-card-cat">Tasting · Sommelier</span>
+            <h3 class="service-card-title">Marani Wine Cellar</h3>
+            <p class="service-card-desc">Exclusive tastings of rare local vintages.</p>
+            <span class="service-card-link">Explore</span>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="#">Privacy</a>
+        <a href="index.html#contacts">Contact</a>
+      </div>
+      <span class="footer-copy">© 2025 Tbil Inn</span>
+    </footer>
+
+  </main>
+
+  <!-- MOBILE STICKY BAR -->
+  <div class="mobile-cta-bar">
+    <span class="cta-text">Open until 22:00</span>
+    <button class="cta-btn" onclick="alert('Booking modal')">Book Now</button>
+  </div>
+
+  <script>
+    /* ════════ SCRIPTS ════════ */
+    // Scroll header logic
+    const header = document.getElementById('mobile-header');
+    const nav = document.getElementById('desktop-nav');
+    window.addEventListener('scroll', () => {
+      if(window.scrollY > 10) {
+        header.classList.add('scrolled');
+        if(nav) nav.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+        if(nav) nav.classList.remove('scrolled');
+      }
+    });
+
+    // Mobile Menu
+    function toggleMobileMenu() {
+      document.getElementById('mobile-menu-overlay').classList.toggle('open');
+      document.body.style.overflow = 
+        document.body.style.overflow === 'hidden' ? '' : 'hidden';
+    }
+
+    // Fade In Animation
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if(entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
